@@ -1,0 +1,21 @@
+version: '3'
+
+services:
+
+  hassio:
+    image: homeassistant/amd64-hassio-supervisor
+    container_name: hassio_supervisor
+    privileged: true
+    entrypoint: ["/bin/bash", "-c", "/scripts/start_hassio.sh"]
+    security_opt:
+      - seccomp:unconfined
+    environment:
+      - HOMEASSISTANT_REPOSITORY=homeassistant/qemux86-64-homeassistant
+      - SUPERVISOR_SHARE=${SUPERVISOR_SHARE}
+      - SUPERVISOR_NAME=hassio_supervisor
+      - DBUS_SYSTEM_BUS_ADDRESS=unix:path=/var/run/dbus/system_bus_socket
+    volumes:
+      - ${SUPERVISOR_SHARE}:/data
+      - ./scripts:/scripts
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /var/run/dbus/system_bus_socket:/var/run/dbus/system_bus_socket
